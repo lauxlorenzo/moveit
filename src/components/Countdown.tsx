@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
-import { ChallengesContext } from '../Contexts/ChallengesContext';
+import { useContext } from 'react';
+import { CountdownContext } from '../Contexts/CountdownContext'
 import styles from '../styles/components/Countdown.module.css'
 
 
@@ -7,49 +7,18 @@ let countdownTimeout: NodeJS.Timeout;
 
 
 export function Countdown() {
-    //Criando os estados
-    const [time, setTime] = useState(0.1 * 60);
-    const [isActive, setIsActive] = useState(false);
-    const [hasFinished, setHasFinished] = useState(false);
-
-    const { startNewChallenge } = useContext(ChallengesContext);
-
-
-    // Criando os minutos e segundos
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-
-
+    const { 
+        minutes, 
+        seconds, 
+        hasFinished, 
+        isActive, 
+        startCountdown, 
+        resetCountdown 
+    } = useContext(CountdownContext)
+   
     // Separando os minutos e segundos em direita e esquerda
     const [minuteLeft, minuteRight] = String(minutes).padStart(2, '0').split('');
     const [secondLeft, secondRight] = String(seconds).padStart(2, '0').split('');
-
-
-    // Iniciando o Contador
-    function startCountdown() {
-        setIsActive(true);
-    }
-
-    // Resetar o Contador
-    function resetCountdown() {
-        clearTimeout(countdownTimeout);
-        setIsActive(false);
-        setTime(0.1 * 60);
-    }
-
-    // Funcionalidade do contador
-    useEffect(() => {
-        if (isActive && time > 0) {
-            countdownTimeout = setTimeout(() => {
-                setTime(time - 1);
-            }, 1000)
-        } else if (isActive && time === 0) {
-            setHasFinished(true);
-            setIsActive(false);
-            startNewChallenge();
-        }
-    }, [isActive, time])
-
 
     // HTML do contador 
     return (
